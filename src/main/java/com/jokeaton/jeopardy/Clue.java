@@ -17,6 +17,7 @@ public class Clue extends Space {
     private int id;
     private Category category;
     private int value;
+    private boolean answered;
 
     /**
      * Constructor for a clue, given a valid category structure the clue belongs to.
@@ -36,6 +37,7 @@ public class Clue extends Space {
         this.id = id;
         this.category = category;
         this.value = value;
+        this.answered = false;
     }
 
     /**
@@ -55,6 +57,7 @@ public class Clue extends Space {
         this.invalid_count = invalid_count;
         this.id = id;
         this.value = value;
+        this.answered = false;
     }
 
     /**
@@ -111,6 +114,22 @@ public class Clue extends Space {
      */
     public int getValue() {
         return this.value;
+    }
+
+    /**
+     * Getter method for whether the clue has been answered or not
+     * @return if the clue is answered
+     */
+    public boolean isAnswered() {
+        return this.answered;
+    }
+
+    /**
+     * Setter method for the clue's answered state
+     * @param state the state of the clue to update to
+     */
+    public void setAnswered(boolean state) {
+        this.answered = state;
     }
 
     /**

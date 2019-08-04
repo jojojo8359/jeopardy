@@ -135,6 +135,6 @@ public class Category extends Space {
     }
 
     public String toString() {
-        return this.getTitle().toUpperCase() + " (" + this.getId() + ")";
+        return this.getTitle().toUpperCase();
     }
 }

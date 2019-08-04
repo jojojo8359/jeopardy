@@ -18,6 +18,14 @@ public class test {
 //        }
 //        System.out.println(board);
 
-        System.out.println(timeParser.convert("2009-07-22T12:00:00.000Z"));
+//        System.out.println(timeParser.convert("2009-07-22T12:00:00.000Z"));
+
+        Board board = new Board();
+        board.genRandColValues(0);
+        Space cat;
+        if(board.getSpace(0, 0).getClass() == Category.class) {
+            cat = board.getSpace(0, 0);
+            board.printCat((Category) cat);
+        }
     }
 }
