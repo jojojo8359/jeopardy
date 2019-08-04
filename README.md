@@ -1,5 +1,5 @@
 # jeopardy
-A Jeopardy game made with Java that uses jservice.io
+A Jeopardy game made with Java that uses [jservice.io](http://jservice.io)
 
 # Planned Features
 - Single-Player
