@@ -1,5 +1,7 @@
 package main.java.com.jokeaton.jeopardy;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.json.*;
 
 import java.io.IOException;
@@ -10,6 +12,8 @@ import java.util.ArrayList;
  * @author Joel Keaton
  */
 public class Category extends Space {
+    private static Logger logger = LogManager.getLogger(Category.class);
+
     private int clues_count;
     private int id;
     private String title;

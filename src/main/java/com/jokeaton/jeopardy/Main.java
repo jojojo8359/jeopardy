@@ -3,7 +3,12 @@ package main.java.com.jokeaton.jeopardy;
 import java.io.IOException;
 import java.text.ParseException;
 
-public class test {
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+
+public class Main {
+    private static final Logger logger = LogManager.getLogger(Main.class);
+
     public static void main(String[] args) throws IOException, ParseException {
 //        System.out.println(Category.getCategory(11508));
 //        ArrayList<ArrayList<Space>> board = new ArrayList<ArrayList<Space>>(5);
@@ -19,13 +24,9 @@ public class test {
 //        System.out.println(board);
 
 //        System.out.println(timeParser.convert("2009-07-22T12:00:00.000Z"));
-
-        Board board = new Board();
-        board.genRandColValues(0);
-        Space cat;
-        if(board.getSpace(0, 0).getClass() == Category.class) {
-            cat = board.getSpace(0, 0);
-            board.printCat((Category) cat);
-        }
+        logger.info("=======================");
+        logger.info("=======================");
+        logger.info("Start singleplayer game");
+        Game.singlePlayer();
     }
 }

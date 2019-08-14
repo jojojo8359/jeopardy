@@ -1,5 +1,7 @@
 package main.java.com.jokeaton.jeopardy;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.json.*;
 
 import java.io.IOException;
@@ -10,6 +12,8 @@ import java.util.ArrayList;
  * @author Joel Keaton
  */
 public class Clue extends Space {
+    private static Logger logger = LogManager.getLogger(Clue.class);
+
     private String answer;
     private String question;
     private String airdate;
@@ -18,6 +22,7 @@ public class Clue extends Space {
     private Category category;
     private int value;
     private boolean answered;
+    private boolean dailyDouble;
 
     /**
      * Constructor for a clue, given a valid category structure the clue belongs to.
@@ -38,6 +43,7 @@ public class Clue extends Space {
         this.category = category;
         this.value = value;
         this.answered = false;
+        this.dailyDouble = false;
     }
 
     /**
@@ -58,6 +64,7 @@ public class Clue extends Space {
         this.id = id;
         this.value = value;
         this.answered = false;
+        this.dailyDouble = false;
     }
 
     /**
@@ -130,6 +137,16 @@ public class Clue extends Space {
      */
     public void setAnswered(boolean state) {
         this.answered = state;
+    }
+
+    // TODO Documentation
+    public boolean isDailyDouble() {
+        return this.dailyDouble;
+    }
+
+    // TODO Documentation
+    public void setDailyDouble(boolean state) {
+        this.dailyDouble = state;
     }
 
     /**

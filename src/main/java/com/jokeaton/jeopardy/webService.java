@@ -4,6 +4,9 @@ import java.io.*;
 import java.net.*;
 import java.util.HashMap;
 import java.util.Map;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.json.*;
 
 /**
@@ -13,6 +16,8 @@ import org.json.*;
  */
 public class webService {
     public webService() {}
+
+    private static Logger logger = LogManager.getLogger(webService.class);
 
     /**
      * Represents the /api/clues endpoint of the API.
@@ -99,6 +104,7 @@ public class webService {
         con.setRequestMethod("GET");
 
         int status = con.getResponseCode();
+        logger.debug("   GET " + url + " " + status);
         Reader streamReader = null;
         if (status > 299) {
             streamReader = new InputStreamReader(con.getErrorStream());
