@@ -94,7 +94,7 @@ public class Board {
             logger.debug("   got cat#" + category.getId());
             finalcat = category;
 //            System.out.print(category);
-            for (int i = start; i <= end; i += increment) { // Searches for clues of values 100-500
+            for (int i = start; i >= end; i -= increment) { // Searches for clues of values 100-500
                 ArrayList<Clue> valuePool = Clue.getClues(i, category.getId(), 0); // Has to make a pool to choose from multiple clues of same value (i.e. 2 $200 clues)
                 this.requests++;
                 if (valuePool.size() == 0) { // If the search comes up empty (no clue with value in category), then throw the category out and try again
@@ -124,7 +124,7 @@ public class Board {
         logger.debug("! finished cat search col " + col + " #" + finalcat.getId());
         this.addSpace(col, finalcat); // Adds the category name to the board for display purposes
         StringBuilder ids = new StringBuilder();
-        for(int i = 0; i < pool.size(); i++) {
+        for(int i = pool.size() - 1; i >= 0; i--) {
             this.addSpace(col, pool.get(i)); // Adds each clue to the board, in value order (least to greatest)
             ids.append(" #").append(pool.get(i).getId());
         }
@@ -139,7 +139,7 @@ public class Board {
         progressPercentage(0, 6);
         for(int i = 0; i < 6; i++) {
             progressPercentage(i, 6);
-            this.genRandColValues(i, 100, 500, 100);
+            this.genRandColValues(i, 500, 100, 100);
         }
         progressPercentage(6, 6);
         long endTime = System.currentTimeMillis();
