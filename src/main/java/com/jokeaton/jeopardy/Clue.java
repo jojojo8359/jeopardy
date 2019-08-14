@@ -1,5 +1,7 @@
 package main.java.com.jokeaton.jeopardy;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.json.*;
 
 import java.io.IOException;
@@ -10,6 +12,8 @@ import java.util.ArrayList;
  * @author Joel Keaton
  */
 public class Clue extends Space {
+    private static Logger logger = LogManager.getLogger(Clue.class);
+
     private String answer;
     private String question;
     private String airdate;
@@ -17,6 +21,8 @@ public class Clue extends Space {
     private int id;
     private Category category;
     private int value;
+    private boolean answered;
+    private boolean dailyDouble;
 
     /**
      * Constructor for a clue, given a valid category structure the clue belongs to.
@@ -36,6 +42,8 @@ public class Clue extends Space {
         this.id = id;
         this.category = category;
         this.value = value;
+        this.answered = false;
+        this.dailyDouble = false;
     }
 
     /**
@@ -55,6 +63,8 @@ public class Clue extends Space {
         this.invalid_count = invalid_count;
         this.id = id;
         this.value = value;
+        this.answered = false;
+        this.dailyDouble = false;
     }
 
     /**
@@ -111,6 +121,32 @@ public class Clue extends Space {
      */
     public int getValue() {
         return this.value;
+    }
+
+    /**
+     * Getter method for whether the clue has been answered or not
+     * @return if the clue is answered
+     */
+    public boolean isAnswered() {
+        return this.answered;
+    }
+
+    /**
+     * Setter method for the clue's answered state
+     * @param state the state of the clue to update to
+     */
+    public void setAnswered(boolean state) {
+        this.answered = state;
+    }
+
+    // TODO Documentation
+    public boolean isDailyDouble() {
+        return this.dailyDouble;
+    }
+
+    // TODO Documentation
+    public void setDailyDouble(boolean state) {
+        this.dailyDouble = state;
     }
 
     /**
