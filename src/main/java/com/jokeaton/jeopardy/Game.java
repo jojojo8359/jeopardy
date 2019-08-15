@@ -156,6 +156,8 @@ public class Game {
                 }
             }
         }
+        System.out.println("You cleared the whole board!");
+        System.out.println("Your final score was: $" + balance);
     }
 
     public static int wager(int balance) {
