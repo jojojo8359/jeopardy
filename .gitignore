@@ -1,3 +1,4 @@
 out/
 .idea/
 *.iml
+/lib/apache-log4j-2.12.0-bin.zip
