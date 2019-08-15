@@ -1,7 +1,5 @@
 package main.java.com.jokeaton.jeopardy;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.json.*;
 
 import java.io.IOException;
@@ -12,8 +10,6 @@ import java.util.ArrayList;
  * @author Joel Keaton
  */
 public class Clue extends Space {
-    private static Logger logger = LogManager.getLogger(Clue.class);
-
     private String answer;
     private String question;
     private String airdate;
@@ -139,14 +135,20 @@ public class Clue extends Space {
         this.answered = state;
     }
 
-    // TODO Documentation
+    /**
+     * Getter method for if the clue is marked as a Daily Double
+     * @return if the clue is a Daily Double
+     */
     public boolean isDailyDouble() {
         return this.dailyDouble;
     }
 
-    // TODO Documentation
-    public void setDailyDouble(boolean state) {
-        this.dailyDouble = state;
+    /**
+     * Setter method for the clue's Daily Double status
+     * @param status the clue's Daily Double status
+     */
+    public void setDailyDouble(boolean status) {
+        this.dailyDouble = status;
     }
 
     /**
@@ -238,9 +240,5 @@ public class Clue extends Space {
      */
     public static ArrayList<Clue> getRandom(int count) throws IOException {
         return cluesFromArray(webService.random(count));
-    }
-
-    public String toString() {
-        return "Q. " + this.getQuestion() + " A. " + this.getAnswer() + " $" + this.getValue();
     }
 }

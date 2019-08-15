@@ -33,14 +33,6 @@
             <AppenderRef ref="RollingFile"/>
         </Logger>
 
-        <Logger name="main.java.com.jokeaton.jeopardy.Category" level="debug" additivity="false">
-            <AppenderRef ref="RollingFile"/>
-        </Logger>
-
-        <Logger name="main.java.com.jokeaton.jeopardy.Clue" level="debug" additivity="false">
-            <AppenderRef ref="RollingFile"/>
-        </Logger>
-
         <Logger name="main.java.com.jokeaton.jeopardy.webService" level="debug" additivity="false">
             <AppenderRef ref="RollingFile"/>
         </Logger>

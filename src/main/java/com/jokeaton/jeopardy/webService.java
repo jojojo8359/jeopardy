@@ -26,7 +26,7 @@ public class webService {
      * @param category the id of the category you want to return
      * @param offset offsets the returned clues. Useful in pagination
      * @return JSON data fetched from endpoint
-     * @throws IOException
+     * @throws IOException caused by get method
      */
     public static JSONArray clues(int value, int category, int offset) throws IOException {
         Map<String, String> parameters = new HashMap<>();
@@ -47,7 +47,7 @@ public class webService {
      * Generates COUNT number of clues.
      * @param count amount of clues to return, limited to 100 at a time
      * @return JSON data fetched from endpoint
-     * @throws IOException
+     * @throws IOException caused by get method
      */
     public static JSONArray random(int count) throws IOException {
         Map<String, String> parameters = new HashMap<>();
@@ -63,7 +63,7 @@ public class webService {
      * @param count amount of categories to return, limited to 100 at a time
      * @param offset offsets the starting id of categories returned. Useful in pagination.
      * @return JSON data fetched from endpoint
-     * @throws IOException
+     * @throws IOException caused by get method
      */
     public static JSONArray categories(int count, int offset) throws IOException {
         Map<String, String> parameters = new HashMap<>();
@@ -81,7 +81,7 @@ public class webService {
      * Fetches a category's data given a specific id.
      * @param id the ID of the category to return
      * @return JSON data fetched from endpoint
-     * @throws IOException
+     * @throws IOException caused by get method
      */
     public static JSONObject category(int id) throws IOException {
         Map<String, String> parameters = new HashMap<>();
@@ -96,7 +96,7 @@ public class webService {
      * @param desturl URL to send request to
      * @param query parameters to add to the end of the URL (not headers)
      * @return data returned from request
-     * @throws IOException
+     * @throws IOException caused by url.openConnection()
      */
     public static String get(String desturl, String query) throws IOException {
         URL url = new URL(desturl + "?" + query);
@@ -129,7 +129,7 @@ public class webService {
      * Formats the parameters string for the URL.
      * @param params a map of parameters to values
      * @return ?param=value&param=value...
-     * @throws UnsupportedEncodingException
+     * @throws UnsupportedEncodingException caused by encode()
      */
     public static String getParamsString(Map<String, String> params)
             throws UnsupportedEncodingException {

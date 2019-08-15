@@ -5,9 +5,18 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class timeParser {
-    public timeParser() {}
+/**
+ * Unused class to parse datetime in an ISO 8601 format
+ * @author Joel Keaton
+ */
 
+public class timeParser {
+    /**
+     * Converts an ISO 8601 time into month dd, yyyy
+     * @param raw the raw ISO 8601 datetime string
+     * @return the month dd, yyyy format
+     * @throws ParseException caused by parse()
+     */
     public static String convert(String raw) throws ParseException {
         DateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
         Date date = format.parse(raw);

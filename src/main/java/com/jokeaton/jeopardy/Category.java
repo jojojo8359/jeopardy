@@ -1,7 +1,5 @@
 package main.java.com.jokeaton.jeopardy;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.json.*;
 
 import java.io.IOException;
@@ -12,8 +10,6 @@ import java.util.ArrayList;
  * @author Joel Keaton
  */
 public class Category extends Space {
-    private static Logger logger = LogManager.getLogger(Category.class);
-
     private int clues_count;
     private int id;
     private String title;
@@ -122,7 +118,7 @@ public class Category extends Space {
      * @param count amount of categories to return, limited to 100 at a time
      * @param offset offsets the starting id of categories returned. Useful in pagination.
      * @return multiple category objects fetched from the endpoint
-     * @throws IOException
+     * @throws IOException caused by get method
      */
     public static ArrayList<Category> getCategories(int count, int offset) throws IOException {
         return categoriesFromArray(webService.categories(count, offset));
@@ -132,13 +128,9 @@ public class Category extends Space {
      * Gets and parses data from the /api/category endpoint.
      * @param id the ID of the category to return
      * @return multiple category objects fetched from the endpoint
-     * @throws IOException
+     * @throws IOException caused by get method
      */
     public static Category getCategory(int id) throws IOException {
         return categoryFromObjectClues(webService.category(id));
-    }
-
-    public String toString() {
-        return this.getTitle().toUpperCase();
     }
 }
