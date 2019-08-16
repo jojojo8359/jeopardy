@@ -30,12 +30,12 @@ public class Main {
             if(mode.length() == 1 && (int) mode.charAt(0) == 49) {
                 System.out.println();
                 while(true) {
-                    System.out.println("Choose a singleplayer mode: ");
-                    System.out.println("1. Normal Jeopardy! board (200-1000)");
-                    System.out.println("2. Double Jeopardy! board (400-2000)");
-                    System.out.println("3. Normal and Double Jeopardy! boards");
-                    System.out.println("4. Normal, Double, and Final Jeopardy! boards (full game)");
-                    System.out.println("5. Back");
+                    System.out.println("Choose a singleplayer mode: \n" +
+                            "1. Normal Jeopardy! board (200-1000)\n" +
+                            "2. Double Jeopardy! board (400-2000)\n" +
+                            "3. Normal and Double Jeopardy! boards\n" +
+                            "4. Normal, Double, and Final Jeopardy! boards (full game)\n" +
+                            "5. Back");
                     System.out.print("> ");
                     String singlePlayerMode = scanner.nextLine();
                     if(singlePlayerMode.length() == 1) {
@@ -47,13 +47,13 @@ public class Main {
                             System.out.println("Your final score was: $" + balance + "\n");
                             break;
                         }
-                        if(code == 50) {
+                        else if(code == 50) {
                             balance = Game.singlePlayer(1, balance);
                             System.out.println("You cleared the Double Jeopardy! board!");
                             System.out.println("Your final score was: $" + balance + "\n");
                             break;
                         }
-                        if(code == 51) {
+                        else if(code == 51) {
                             balance = Game.singlePlayer(0, balance);
                             System.out.println("You cleared the Single Jeopardy! board!");
                             System.out.println("Your score is: $" + balance + "\n");
@@ -62,7 +62,7 @@ public class Main {
                             System.out.println("Your final score was: $" + balance + "\n");
                             break;
                         }
-                        if(code == 52) {
+                        else if(code == 52) {
                             balance = Game.singlePlayer(0, balance);
                             System.out.println("You cleared the Single Jeopardy! board!");
                             System.out.println("Your score is: $" + balance + "\n");
@@ -74,7 +74,12 @@ public class Main {
                             System.out.println("Your final score was: $" + balance + "\n");
                             break;
                         }
-                        if(code == 53) {
+                        else if(code == 53) {
+                            balance = Game.triviaMode();
+                            System.out.println("Your final score was: $" + balance + "\n");
+                            break;
+                        }
+                        else if(code == 54) {
                             break;
                         }
                     }

@@ -96,6 +96,7 @@ public class Game {
             System.out.println("| (\\ (      | |   | | \\_  )| (   ) |   | |   ");
             System.out.println("| ) \\ \\_____) (___| (___) || )   ( |   | |   ");
             System.out.println("|/   \\__/\\_______/(_______)|/     \\|   )_(   ");
+            System.out.println();
             System.out.println("+$" + value);
             System.out.println("The correct answer was " + parseAnswer(clue.getAnswer())); // TODO DELETE
             balance += value;
@@ -108,6 +109,7 @@ public class Game {
             System.out.println("| || || || (\\ (   | |   | || | \\   || | \\_  )");
             System.out.println("| () () || ) \\ \\__| (___) || )  \\  || (___) |");
             System.out.println("(_______)|/   \\__/(_______)|/    )_)(_______)");
+            System.out.println();
             System.out.println("-$" + value);
             System.out.println("The correct answer was " + parseAnswer(clue.getAnswer()));
             balance -= value;
@@ -357,8 +359,56 @@ public class Game {
                 break;
             }
         }
-        System.out.println("[Enter] ");
+        System.out.print("[Enter] ");
         scanner.nextLine();
         return balance;
+    }
+
+    public static int triviaMode() throws IOException {
+        int balance = 0;
+        while(true) {
+            ArrayList<Clue> finalClue = new ArrayList<>();
+            boolean done = false;
+            while (!done) {
+                ArrayList<Clue> pool = Clue.getRandom(100);
+                for (Clue clue : pool) {
+                    if (clue.getValue() != 0) {
+                        if (!clue.getQuestion().trim().equals("")) {
+                            if (!clue.getAnswer().trim().equals("")) {
+                                finalClue.add(clue);
+                                done = true;
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+            Clue clue = finalClue.get(0);
+            if (clue.getValue() == 100 || clue.getValue() == 300 || clue.getValue() == 500) {
+                clue.setValue(clue.getValue() * 2);
+            }
+
+            System.out.println("\nFor $" + clue.getValue() + ":");
+
+            GridTable g = GridTable.of(1, 1); // Displays the category in a simple box
+            g.put(0, 0, Collections.singleton(clue.getCategory().getTitle().toUpperCase()));
+            g.apply(VERTICAL_CENTER).apply(HORIZONTAL_CENTER);
+            g = Border.SINGLE_LINE.apply(g);
+            Util.print(g);
+
+            GridTable h = GridTable.of(1, 1); // Displays the question in a simple box
+            h.put(0, 0, Collections.singleton(clue.getQuestion()));
+            h.apply(VERTICAL_CENTER).apply(HORIZONTAL_CENTER);
+            h = Border.SINGLE_LINE.apply(h);
+            Util.print(h);
+
+            balance = Game.processGuess(finalClue.get(0), clue.getValue(), balance);
+            System.out.println("\nBalance: $" + balance + "\n");
+            System.out.print("[Enter/q] ");
+            String exit = scanner.nextLine();
+            if(exit.trim().equals("q")) {
+                return balance;
+            }
+        }
     }
 }
