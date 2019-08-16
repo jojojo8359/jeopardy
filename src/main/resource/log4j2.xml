@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Configuration status="info">
     <Properties>
-        <Property name="logdir">/home/joel/Desktop/logs</Property>
+        <Property name="logdir"/><!--home/joel/Desktop/logs-->
         <Property name="layout">%-5level | %d | %-12logger{1} - %m%n</Property>
     </Properties>
 
@@ -10,34 +10,34 @@
             <PatternLayout pattern="${layout}"/>
         </Console>
 
-        <RollingFile name="RollingFile" fileName="${logdir}/app.log" filePattern="${logdir}/$${date:yyyy-MM}/app-%d{MM-dd-yyyy}-%i.log.gz">
-            <PatternLayout pattern="${layout}"/>
-            <Policies>
-                <TimeBasedTriggeringPolicy/>
-                <SizeBasedTriggeringPolicy size="1 MB"/>
-            </Policies>
-            <DefaultRolloverStrategy max="20"/>
-        </RollingFile>
+<!--        <RollingFile name="RollingFile" fileName="${logdir}/app.log" filePattern="${logdir}/$${date:yyyy-MM}/app-%d{MM-dd-yyyy}-%i.log.gz">-->
+<!--            <PatternLayout pattern="${layout}"/>-->
+<!--            <Policies>-->
+<!--                <TimeBasedTriggeringPolicy/>-->
+<!--                <SizeBasedTriggeringPolicy size="1 MB"/>-->
+<!--            </Policies>-->
+<!--            <DefaultRolloverStrategy max="20"/>-->
+<!--        </RollingFile>-->
     </Appenders>
 
     <Loggers>
-        <Logger name="main.java.com.jokeaton.jeopardy.Main" level="info" additivity="false">
-            <AppenderRef ref="RollingFile"/>
-        </Logger>
+<!--        <Logger name="main.java.com.jokeaton.jeopardy.Main" level="info" additivity="false">-->
+<!--            <AppenderRef ref="RollingFile"/>-->
+<!--        </Logger>-->
 
-        <Logger name="main.java.com.jokeaton.jeopardy.Game" level="debug" additivity="false">
-            <AppenderRef ref="RollingFile"/>
-        </Logger>
+<!--        <Logger name="main.java.com.jokeaton.jeopardy.Game" level="debug" additivity="false">-->
+<!--            <AppenderRef ref="RollingFile"/>-->
+<!--        </Logger>-->
 
-        <Logger name="main.java.com.jokeaton.jeopardy.Board" level="debug" additivity="false">
-            <AppenderRef ref="RollingFile"/>
-        </Logger>
+<!--        <Logger name="main.java.com.jokeaton.jeopardy.Board" level="debug" additivity="false">-->
+<!--            <AppenderRef ref="RollingFile"/>-->
+<!--        </Logger>-->
 
-        <Logger name="main.java.com.jokeaton.jeopardy.webService" level="debug" additivity="false">
-            <AppenderRef ref="RollingFile"/>
-        </Logger>
+<!--        <Logger name="main.java.com.jokeaton.jeopardy.webService" level="debug" additivity="false">-->
+<!--            <AppenderRef ref="RollingFile"/>-->
+<!--        </Logger>-->
 
-        <Root level="error">
+        <Root level="off"><!--level="error"-->
             <AppenderRef ref="Console"/>
         </Root>
     </Loggers>

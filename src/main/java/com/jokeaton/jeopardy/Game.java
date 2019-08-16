@@ -98,7 +98,7 @@ public class Game {
             System.out.println("|/   \\__/\\_______/(_______)|/     \\|   )_(   ");
             System.out.println();
             System.out.println("+$" + value);
-            System.out.println("The correct answer was " + parseAnswer(clue.getAnswer())); // TODO DELETE
+//            System.out.println("The correct answer was " + parseAnswer(clue.getAnswer())); // TODO DELETE
             balance += value;
         } else {
             System.out.println("          _______  _______  _        _______ ");
