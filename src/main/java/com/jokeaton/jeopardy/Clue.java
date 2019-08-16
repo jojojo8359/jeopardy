@@ -120,6 +120,14 @@ public class Clue extends Space {
     }
 
     /**
+     * Setter method for the clue's money value
+     * @param value dollar value of the clue
+     */
+    public void setValue (int value) {
+        this.value = value;
+    }
+
+    /**
      * Getter method for whether the clue has been answered or not
      * @return if the clue is answered
      */
@@ -168,7 +176,12 @@ public class Clue extends Space {
         }
         int id = clue.getInt("id");
         Category category = Category.categoryFromObject(clue.getJSONObject("category"));
-        int value = clue.getInt("value");
+        int value;
+        try {
+            value = clue.getInt("value");
+        } catch (JSONException e) {
+            value = 0;
+        }
         return new Clue(answer, question, airdate, invalid_count, id, category, value);
     }
 

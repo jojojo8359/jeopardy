@@ -1,11 +1,13 @@
 package main.java.com.jokeaton.jeopardy;
 
 import java.io.IOException;
+import java.util.Scanner;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 
 public class Main {
+    private static Scanner scanner = new Scanner(System.in);
     private static final Logger logger = LogManager.getLogger(Main.class);
 
     public static void main(String[] args) throws IOException {
@@ -17,9 +19,76 @@ public class Main {
         System.out.println("   |  |  | (      | |   | || (      | (   ) || (\\ (   | |   ) |   ) (   (_)");
         System.out.println("|\\_)  )  | (____/\\| (___) || )      | )   ( || ) \\ \\__| (__/  )   | |    _ ");
         System.out.println("(____/   (_______/(_______)|/       |/     \\||/   \\__/(______/    \\_/   (_)");
-        logger.info("=======================");
-        logger.info("=======================");
-        logger.info("Start singleplayer game");
-        Game.singlePlayer();
+        System.out.println();
+
+        while(true) {
+            System.out.println("Choose a mode: ");
+            System.out.println("1. Singleplayer");
+            System.out.println("2. Exit\n");
+            System.out.print("> ");
+            String mode = scanner.nextLine().trim();
+            if(mode.length() == 1 && (int) mode.charAt(0) == 49) {
+                System.out.println();
+                while(true) {
+                    System.out.println("Choose a singleplayer mode: ");
+                    System.out.println("1. Normal Jeopardy! board (200-1000)");
+                    System.out.println("2. Double Jeopardy! board (400-2000)");
+                    System.out.println("3. Normal and Double Jeopardy! boards");
+                    System.out.println("4. Normal, Double, and Final Jeopardy! boards (full game)");
+                    System.out.println("5. Back");
+                    System.out.print("> ");
+                    String singlePlayerMode = scanner.nextLine();
+                    if(singlePlayerMode.length() == 1) {
+                        int code = singlePlayerMode.charAt(0);
+                        int balance = 0;
+                        if(code == 49) {
+                            balance = Game.singlePlayer(0, balance);
+                            System.out.println("You cleared the Single Jeopardy! board!");
+                            System.out.println("Your final score was: $" + balance + "\n");
+                            break;
+                        }
+                        if(code == 50) {
+                            balance = Game.singlePlayer(1, balance);
+                            System.out.println("You cleared the Double Jeopardy! board!");
+                            System.out.println("Your final score was: $" + balance + "\n");
+                            break;
+                        }
+                        if(code == 51) {
+                            balance = Game.singlePlayer(0, balance);
+                            System.out.println("You cleared the Single Jeopardy! board!");
+                            System.out.println("Your score is: $" + balance + "\n");
+                            balance = Game.singlePlayer(1, balance);
+                            System.out.println("You cleared the Double Jeopardy! board!");
+                            System.out.println("Your final score was: $" + balance + "\n");
+                            break;
+                        }
+                        if(code == 52) {
+                            balance = Game.singlePlayer(0, balance);
+                            System.out.println("You cleared the Single Jeopardy! board!");
+                            System.out.println("Your score is: $" + balance + "\n");
+                            balance = Game.singlePlayer(1, balance);
+                            System.out.println("You cleared the Double Jeopardy! board!");
+                            System.out.println("Your score is: $" + balance + "\n");
+                            balance = Game.finalJeopardy(balance);
+                            System.out.println("You completed the Final Jeopardy! clue!");
+                            System.out.println("Your final score was: $" + balance + "\n");
+                            break;
+                        }
+                        if(code == 53) {
+                            break;
+                        }
+                    }
+                    else {
+                        System.out.println("Please try again.\n");
+                    }
+                }
+            }
+            else if(mode.length() == 1 && (int) mode.charAt(0) == 50) {
+                break;
+            }
+            else {
+                System.out.println("Please try again.\n");
+            }
+        }
     }
 }

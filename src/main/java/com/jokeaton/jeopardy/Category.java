@@ -63,7 +63,7 @@ public class Category extends Space {
      * @return title of the category
      */
     public String getTitle() {
-        return this.title;
+        return this.title.replaceAll("\u0093\u0094", "\"");
     }
 
     /**
