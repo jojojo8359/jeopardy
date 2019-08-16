@@ -8,9 +8,9 @@ A Jeopardy game made with Java that uses [jservice.io](http://jservice.io)
 - Log4j2             ([Download](http://logging.apache.org/log4j/2.x/download.html))
 
 # Planned Features
-- Single-Player
-  - Classic mode (with standard board)
-  - Trivia mode (nonstop questions)
-- Multi-Player
-  - Local
-  - Online/LAN
+- [ ] Single-Player
+  - [X] Classic mode (with standard board)
+  - [ ] Trivia mode (nonstop questions)
+- [ ] Multi-Player
+  - [ ] Local
+  - [ ] Online/LAN
