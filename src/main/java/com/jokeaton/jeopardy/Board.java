@@ -183,6 +183,9 @@ public class Board {
         logger.debug("! finished cat search col " + col + " #" + finalcat.getId());
         this.addSpace(col, finalcat); // Adds the category name to the board for display purposes
         StringBuilder ids = new StringBuilder();
+        for (Clue clue : pool) {
+            clue.setValue(clue.getValue() * 2);
+        }
         for(int i = pool.size() - 1; i >= 0; i--) {
             this.addSpace(col, pool.get(i)); // Adds each clue to the board, in value order (least to greatest)
             ids.append(" #").append(pool.get(i).getId());
@@ -190,15 +193,29 @@ public class Board {
         logger.debug("! clues:" + ids);
     }
 
-    public void genRandomBoard() throws IOException {
-        this.mode = "normal"; // This means that the board will generate values from 100-500
+    public void genRandomBoard(int mode) throws IOException {
+        if(mode == 0) {
+            this.mode = "normal"; // This means that the board will generate values from 100-500
+        }
+        else if(mode == 1) {
+            this.mode = "double";
+        }
         this.requests = 0;
         logger.debug("Generating board \"" + this.mode + "\"");
+        System.out.println("Generating a " + this.mode + " board...\n");
         long startTime = System.currentTimeMillis(); // Start timer for progress bar
         progressPercentage(0, 6); // Starts displaying progress bar
-        for(int i = 0; i < 6; i++) {
-            progressPercentage(i, 6);
-            this.genRandColValues(i, 500, 100, 100); // Switched to reverse generation for faster loading times (especially for double mode)
+        if(mode == 0) {
+            for (int i = 0; i < 6; i++) {
+                progressPercentage(i, 6);
+                this.genRandColValues(i, 500, 100, 100); // Switched to reverse generation for faster loading times (especially for double mode)
+            }
+        }
+        else {
+            for (int i = 0; i < 6; i++) {
+                progressPercentage(i, 6);
+                this.genRandColValues(i, 1000, 200, 200);
+            }
         }
         progressPercentage(6, 6); // Finish progress bar
         long endTime = System.currentTimeMillis();
@@ -271,8 +288,10 @@ public class Board {
                     String title = this.getCategory(i).getTitle().toUpperCase();
                     if(title.length() > globalWidth && title.contains(" ")) { // Wraps category text if necessary
                         String[] sep = new String[2];
-                        sep[0] = title.substring(0, title.lastIndexOf(" "));
-                        sep[1] = title.substring(title.lastIndexOf(" "));
+                        String split = title.substring(0, globalWidth);
+                        int index = split.indexOf(" ");
+                        sep[0] = title.substring(0, index).trim();
+                        sep[1] = title.substring(index).trim();
                         g.put(j, i, Cell.of(sep));
                     }
                     else {

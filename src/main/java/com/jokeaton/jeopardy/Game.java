@@ -8,8 +8,11 @@ import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
 import java.text.Normalizer;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Scanner;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static com.inamik.text.tables.Cell.Functions.HORIZONTAL_CENTER;
 import static com.inamik.text.tables.Cell.Functions.VERTICAL_CENTER;
@@ -20,6 +23,7 @@ import static com.inamik.text.tables.Cell.Functions.VERTICAL_CENTER;
  */
 public class Game {
     private static Logger logger = LogManager.getLogger(Game.class);
+    private static Scanner scanner = new Scanner(System.in);
 
     public Game() {}
 
@@ -27,124 +31,38 @@ public class Game {
      * Starts a singleplayer game
      * @throws IOException caused by get method
      */
-    public static void singlePlayer() throws IOException {
+    public static int singlePlayer(int mode, int balance) throws IOException {
+        logger.info("===========================");
         logger.info("Create new board");
         Board board = new Board(); // Creates new board instance
         logger.info("Generate random board");
-        board.genRandomBoard(); // Generates random categories and clues for the board
-        Scanner scanner = new Scanner(System.in);
-        int balance = 0; // Initializes user's balance
+        board.genRandomBoard(mode); // Generates random categories and clues for the board
         logger.info("Starting game");
         while(!board.boardAnswered()) { // While the board still has clues on it
-            System.out.println("        A              B              C              D              E              F       "); // Print column headers
-            System.out.println(board);
-            System.out.println("Balance: $" + balance);
+            printNormalBoard(board, balance);
             while(true) { // Main guess loop
                 int col;
                 int row = 0;
-                while (true) { // Category selection loop
-                    System.out.println();
-                    System.out.print("Choose a category [A-F]: ");
-                    String column = scanner.nextLine().toLowerCase();
-                    column = column.trim(); // Remove whitespace
-                    if(column.equals("quit") || column.equals("exit")) { // Breakout method
-                        System.exit(0);
-                    }
-                    if (column.length() == 1) { // Expects a single character...
-                        int code = column.charAt(0);
-                        if(code >= 97 && code <= 102) { // From a-f (decimal 97-102)
-                            col = code - 97; // Converts to base 0 (a = 0, b = 1, c = 2, etc.)
-                            logger.info("Chose column " + col);
-                            break;
-                        }
-                        else {
-                            System.out.println("I couldn't recognize that! Please try again!"); // Make user try again if it isn't from a-f
-                        }
-                    } else {
-                        System.out.println("I couldn't recognize that! Please try again!"); // Make user try again if it isn't one character
-                    }
-                }
-                boolean reported = false; // Adds break variable for if the user reports the selected category
-                while (true) {
-                    if (board.getMode().equals("normal")) { // If the board has values from 100-500 (for formatting text)
-                        System.out.println();
-                        System.out.print("Choose a value [100-500]: ");
-                        String value = scanner.nextLine();
-                        if(value.equals("!r")) { // If the user types "!r", show the category's id for reporting purposes.
-                            System.out.println("Only use the report link if something is wrong with the category text. This category's ID is " + board.getCategory(col).getId());
-                            logger.warn("Reported Category #" + board.getCategory(col).getId());
-                            reported = true; // Allows the user to rechoose a clue after getting the report id
-                            break;
-                        }
-                        else if (value.length() == 1 || value.length() == 3) { // If the user's input is either 1 or 3 characters long (ex. 1 / 100)
-                            if ((int) value.charAt(0) >= 49 && (int) value.charAt(0) <= 53) { // Checks if the number is in between 1-5 (decimal 49-53)
-                                row = value.charAt(0) - 48; // Converts to base 1 to accommodate for categories in first row
-                                logger.info("Chose row " + row);
-                                break;
-                            }
-                        }
-                        System.out.println("I couldn't recognize that! Please try again!"); // Make user try again if it isn't a number or 1/3 characters
-                    }
-                }
-                if(reported) { // Report break
-                    break;
-                }
+                col = getColumn(); // Gets column input from user
+                row = getRow(board, col);
+                if(row == -1) {break;} // Report break
                 if (!board.isAnswered(col, row)) { // Checks if the clue selected is not answered
-                    int value = row * 100; // Scales row value up to the amount
-                    System.out.println();
-                    boolean canWager = true; // If the user's balance is below 1, they cannot wager on a Daily Double
-                    if (board.dailyDouble(col, row)) {
-                        System.out.println();
-                        System.out.println("Daily double found!");
-                        int wager = wager(balance); // wager() method takes care of handling the wager input
-                        value = wager;
-                        if (wager == 0) { // If the user cannot wager, break out of the whole loop (choose another clue) and mark current clue as answered
-                            canWager = false;
-                            board.getClue(col, row).setAnswered(true);
-                        }
+                    int value;
+                    if(board.getMode().equals("normal")) { // Scales row value up to the amount
+                        value = row * 200;
                     }
-                    if(!canWager) { // Wager break
+                    else {
+                        value = row * 400;
+                    }
+                    System.out.println();
+                    value = checkDailyDouble(board, col, row, balance, value); // Returns the modified value of the clue after getting wager input
+                    if(value == -1) {break;} // Wager break
+                    printClue(board, col, row, value); // Prints the clue to the board in its box
+                    int balanceBefore = balance;
+                    balance = processGuess(board.getClue(col, row), value, balance);
+                    if(balance == -balanceBefore) {
+                        balance = -balance;
                         break;
-                    }
-                    System.out.println();
-                    System.out.println("For $" + value + ":");
-                    GridTable g = GridTable.of(1, 1); // Displays the question in a simple box
-                    g.put(0, 0, Collections.singleton(board.getClue(col, row).getQuestion()));
-                    g.apply(VERTICAL_CENTER).apply(HORIZONTAL_CENTER);
-                    g = Border.SINGLE_LINE.apply(g);
-                    Util.print(g);
-                    System.out.print("What/who is "); // Prompt for the user to answer the question
-                    String answer = scanner.nextLine();
-                    logger.info("Guessed " + answer + ", answer " + board.getClue(col, row).getAnswer());
-                    if(answer.equals("!r") || board.getClue(col, row).getAnswer().equals("")) { // Triggers report case if the user types "!r" or the question is somehow empty
-                        System.out.println("Only use the report link if something is wrong with the clue text. This clue's ID is " + board.getClue(col, row).getId());
-                        logger.warn("Reported Clue #" + board.getClue(col, row).getId());
-                        continue; // Sends user to the beginning of the guess loop
-                    }
-                    if (checkAnswer(answer, board.getClue(col, row).getAnswer())) { // Utilizes checkAnswer() to make sure the answer and guess are similar enough
-                        System.out.println(" _______ _________ _______          _________"); // All ASCII Art generated with http://patorjk.com/software/taag/
-                        System.out.println("(  ____ )\\__   __/(  ____ \\|\\     /|\\__   __/");
-                        System.out.println("| (    )|   ) (   | (    \\/| )   ( |   ) (   ");
-                        System.out.println("| (____)|   | |   | |      | (___) |   | |   ");
-                        System.out.println("|     __)   | |   | | ____ |  ___  |   | |   ");
-                        System.out.println("| (\\ (      | |   | | \\_  )| (   ) |   | |   ");
-                        System.out.println("| ) \\ \\_____) (___| (___) || )   ( |   | |   ");
-                        System.out.println("|/   \\__/\\_______/(_______)|/     \\|   )_(   ");
-                        System.out.println("+$" + value);
-                        System.out.println("The correct answer was " + board.getClue(col, row).getAnswer()); // TODO DELETE
-                        balance += value;
-                    } else {
-                        System.out.println("          _______  _______  _        _______ ");
-                        System.out.println("|\\     /|(  ____ )(  ___  )( (    /|(  ____ \\");
-                        System.out.println("| )   ( || (    )|| (   ) ||  \\  ( || (    \\/");
-                        System.out.println("| | _ | || (____)|| |   | ||   \\ | || |      ");
-                        System.out.println("| |( )| ||     __)| |   | || (\\ \\) || | ____ ");
-                        System.out.println("| || || || (\\ (   | |   | || | \\   || | \\_  )");
-                        System.out.println("| () () || ) \\ \\__| (___) || )  \\  || (___) |");
-                        System.out.println("(_______)|/   \\__/(_______)|/    )_)(_______)");
-                        System.out.println("-$" + value);
-                        System.out.println("The correct answer was " + board.getClue(col, row).getAnswer());
-                        balance -= value;
                     }
                     board.getClue(col, row).setAnswered(true); // Mark clue as answered
                     System.out.print("[Enter] "); // Prompts the user to press enter
@@ -156,12 +74,142 @@ public class Game {
                 }
             }
         }
-        System.out.println("You cleared the whole board!");
-        System.out.println("Your final score was: $" + balance);
+        return balance;
+    }
+
+    public static int processGuess(Clue clue, int value, int balance) {
+        System.out.print("What/who is "); // Prompt for the user to answer the question
+        String answer = scanner.nextLine();
+        logger.info("Guessed " + answer + ", answer " + clue.getAnswer());
+        if(answer.equals("!r") || clue.getAnswer().equals("")) { // Triggers report case if the user types "!r" or the question is somehow empty
+            System.out.println("Only use the report link if something is wrong with the clue text. This clue's ID is " + clue.getId());
+            logger.warn("Reported Clue #" + clue.getId());
+            balance = -balance; // Sends user to the beginning of the guess loop
+            return balance;
+        }
+        if (checkAnswer(answer, clue.getAnswer())) { // Utilizes checkAnswer() to make sure the answer and guess are similar enough
+            System.out.println(" _______ _________ _______          _________"); // All ASCII Art generated with http://patorjk.com/software/taag/
+            System.out.println("(  ____ )\\__   __/(  ____ \\|\\     /|\\__   __/");
+            System.out.println("| (    )|   ) (   | (    \\/| )   ( |   ) (   ");
+            System.out.println("| (____)|   | |   | |      | (___) |   | |   ");
+            System.out.println("|     __)   | |   | | ____ |  ___  |   | |   ");
+            System.out.println("| (\\ (      | |   | | \\_  )| (   ) |   | |   ");
+            System.out.println("| ) \\ \\_____) (___| (___) || )   ( |   | |   ");
+            System.out.println("|/   \\__/\\_______/(_______)|/     \\|   )_(   ");
+            System.out.println();
+            System.out.println("+$" + value);
+            System.out.println("The correct answer was " + parseAnswer(clue.getAnswer())); // TODO DELETE
+            balance += value;
+        } else {
+            System.out.println("          _______  _______  _        _______ ");
+            System.out.println("|\\     /|(  ____ )(  ___  )( (    /|(  ____ \\");
+            System.out.println("| )   ( || (    )|| (   ) ||  \\  ( || (    \\/");
+            System.out.println("| | _ | || (____)|| |   | ||   \\ | || |      ");
+            System.out.println("| |( )| ||     __)| |   | || (\\ \\) || | ____ ");
+            System.out.println("| || || || (\\ (   | |   | || | \\   || | \\_  )");
+            System.out.println("| () () || ) \\ \\__| (___) || )  \\  || (___) |");
+            System.out.println("(_______)|/   \\__/(_______)|/    )_)(_______)");
+            System.out.println();
+            System.out.println("-$" + value);
+            System.out.println("The correct answer was " + parseAnswer(clue.getAnswer()));
+            balance -= value;
+        }
+        return balance;
+    }
+
+    public static void printClue(Board board, int col, int row, int value) {
+        System.out.println();
+        System.out.println("For $" + value + ":");
+        GridTable g = GridTable.of(1, 1); // Displays the question in a simple box
+        g.put(0, 0, Collections.singleton(board.getClue(col, row).getQuestion()));
+        g.apply(VERTICAL_CENTER).apply(HORIZONTAL_CENTER);
+        g = Border.SINGLE_LINE.apply(g);
+        Util.print(g);
+    }
+
+    public static int checkDailyDouble(Board board, int col, int row, int balance, int value) {
+        if (board.dailyDouble(col, row)) {
+            System.out.println();
+            System.out.println("Daily double found!");
+            int wager = wager(balance); // wager() method takes care of handling the wager input
+            value = wager;
+            if (wager == 0) { // If the user cannot wager, break out of the whole loop (choose another clue) and mark current clue as answered
+                value = -1;
+                board.getClue(col, row).setAnswered(true);
+            }
+        }
+        return value; // If the clue is not a Daily Double, just spit the value back out again
+    }
+
+    public static int getColumn() {
+        int col;
+        while (true) { // Category selection loop
+            System.out.println();
+            System.out.print("Choose a category [A-F]: ");
+            String column = scanner.nextLine().toLowerCase();
+            column = column.trim(); // Remove whitespace
+            if(column.equals("quit") || column.equals("exit")) { // Breakout method
+                System.exit(0);
+            }
+            if (column.length() == 1) { // Expects a single character...
+                int code = column.charAt(0);
+                if(code >= 97 && code <= 102) { // From a-f (decimal 97-102)
+                    col = code - 97; // Converts to base 0 (a = 0, b = 1, c = 2, etc.)
+                    logger.info("Chose column " + col);
+                    break;
+                }
+                else {
+                    System.out.println("I couldn't recognize that! Please try again!"); // Make user try again if it isn't from a-f
+                }
+            } else {
+                System.out.println("I couldn't recognize that! Please try again!"); // Make user try again if it isn't one character
+            }
+        }
+        return col;
+    }
+
+    public static int getRow(Board board, int col) {
+        int row;
+        while (true) {
+//            if (board.getMode().equals("normal")) { // If the board has values from 100-500 (for formatting text)
+            System.out.println();
+            if(board.getMode().equals("normal")) {System.out.print("Choose a value [200-1000]: ");}
+            else if(board.getMode().equals("double")) {System.out.print("Choose a value [400-2000]: ");}
+            String value = scanner.nextLine();
+            if(value.equals("!r")) { // If the user types "!r", show the category's id for reporting purposes.
+                System.out.println("Only use the report link if something is wrong with the category text. This category's ID is " + board.getCategory(col).getId());
+                logger.warn("Reported Category #" + board.getCategory(col).getId());
+                return -1; // Allows the user to rechoose a clue after getting the report id
+            }
+
+            if(board.getMode().equals("double")) {
+                if(value.equals("4") || value.equals("400")) {row = 1; break;}
+                else if(value.equals("8") || value.equals("800")) {row = 2; break;}
+                else if(value.equals("12") || value.equals("1200")) {row = 3; break;}
+                else if(value.equals("16") || value.equals("1600")) {row = 4; break;}
+                else if(value.equals("2") || value.equals("20") || value.equals("2000")) {row = 5; break;}
+                System.out.println("I couldn't recognize that! Please try again!"); // Make user try again if it isn't a number it recognizes
+            }
+            else if(board.getMode().equals("normal")) {
+                if(value.equals("2") || value.equals("200")) {row = 1; break;}
+                else if(value.equals("4") || value.equals("400")) {row = 2; break;}
+                else if(value.equals("6") || value.equals("600")) {row = 3; break;}
+                else if(value.equals("8") || value.equals("800")) {row = 4; break;}
+                else if(value.equals("1") || value.equals("10") || value.equals("1000")) {row = 5; break;}
+                System.out.println("I couldn't recognize that! Please try again!"); // Make user try again if it isn't a number it recognizes
+            }
+        }
+        logger.info("Chose row " + row);
+        return row;
+    }
+
+    public static void printNormalBoard(Board board, int balance) {
+        System.out.println("        A              B              C              D              E              F       "); // Print column headers
+        System.out.println(board);
+        System.out.println("Balance: $" + balance);
     }
 
     public static int wager(int balance) {
-        Scanner scanner = new Scanner(System.in);
         while(true) {
             if(balance > 1) {
                 System.out.print("Enter a wager from 1-" + balance + ": $"); // Minimum wager is 1, maximum wager is the user's current balance
@@ -176,38 +224,38 @@ public class Game {
                 }
             }
             else {
-                System.out.println("You can't wager with no money!");
-                return 0;
+                System.out.println("You have $1000 to wager.");
+                balance = 1000;
             }
         }
     }
 
-    public static boolean checkAnswer(String guess, String answer) {
-        if(guess.length() == 0) {return false;} // If the guess is empty, it is automatically wrong (false)
+    public static String parseAnswer(String guess) {
         guess = guess.toLowerCase().trim(); // Removes outer whitespace
-        answer = answer.toLowerCase().trim();
+        guess = Normalizer.normalize(guess, Normalizer.Form.NFD); // Removes all accents from both strings, replaces them with their normal counterparts
+        guess = guess.replaceAll("[^\\p{ASCII}]", ""); // https://stackoverflow.com/a/3322174
+        guess = guess.replaceAll("\"", ""); // Removes all quotations
+        guess = guess.replaceAll("\\?", ""); // Removes all question marks
+        guess = guess.replaceAll("<[^>]*>", ""); // https://stackoverflow.com/a/4075756 Removes all HTML formatting tags (ex. <i>, <b>)
+        guess = guess.replaceAll(",", "");
+        guess=  guess.replaceAll("\\.", "");
+        guess = guess.replaceAll("&", "and");
+        guess = guess.replaceAll("'", "");
+        guess = guess.replaceAll("\\\\", "");
+        guess = guess.replaceAll("\\*", "");
+        guess = guess.trim();
         guess = removeString(guess, "the "); // Removes the articles the, an, a, and your from both guess and answer (possibly more in the future)
         guess = removeString(guess, "an ");
         guess = removeString(guess, "a ");
         guess = removeString(guess, "your ");
-        answer = removeString(answer, "the ");
-        answer = removeString(answer, "an ");
-        answer = removeString(answer, "a ");
-        answer = removeString(answer, "your ");
+        guess = guess.trim();
+        return guess;
+    }
 
-        guess = Normalizer.normalize(guess, Normalizer.Form.NFD); // Removes all accents from both strings, replaces them with their normal counterparts
-        answer = Normalizer.normalize(answer, Normalizer.Form.NFD);
-        guess = guess.replaceAll("[^\\p{ASCII}]", "");
-        answer = answer.replaceAll("[^\\p{ASCII}]", "");
-
-        guess = guess.replaceAll("\"", ""); // Removes all quotations
-        answer = answer.replaceAll("\"", "");
-
-        guess = guess.replaceAll("\\?", ""); // Removes all question marks
-        answer = answer.replaceAll("\\?", "");
-
-        guess = guess.replaceAll("<[^>]*>", ""); // https://stackoverflow.com/a/4075756
-        answer = answer.replaceAll("<[^>]*>", ""); // Removes all HTML formatting tags (ex. <i>, <b>)
+    public static boolean checkAnswer(String guess, String answer) {
+        if(guess.length() == 0) {return false;} // If the guess is empty, it is automatically wrong (false)
+        guess = parseAnswer(guess);
+        answer = parseAnswer(answer);
 
         if(distance(guess, answer) <= 2) { // Uses Levenshtein distance with a threshold of 2 (translates to 2 typos between guess and answer)
             return true;
@@ -217,6 +265,31 @@ public class Game {
                 return true;
             }
             else {
+                String var = "";
+                String opposite = "";
+                if(answer.contains("(") || guess.contains(")")) {
+                    if (answer.contains("(")) {var = answer; opposite = guess;}
+                    else {var = guess; opposite = answer;}
+                    String pattern = "(\\(.*?\\))";
+                    Pattern r = Pattern.compile(pattern);
+                    Matcher m = r.matcher(var);
+                    if (m.find()) {
+                        String inside = m.group(1).replaceAll("[()]", "").trim();
+                        String outside = var.replaceAll(m.group(1), "").replaceAll("[()]", "").trim();
+                        if (Game.checkAnswer(opposite, inside) || Game.checkAnswer(opposite, outside)) {
+                            return true;
+                        }
+                    }
+                }
+
+                if(answer.contains("/")) {
+                    String first = answer.substring(0, answer.indexOf("/")).trim();
+                    String last = answer.substring(answer.indexOf("/")).replaceAll("/", "").trim();
+                    if(Game.checkAnswer(guess, first) || Game.checkAnswer(guess, last)) {
+                        return true;
+                    }
+                }
+
                 return false;
             }
         }
@@ -244,5 +317,98 @@ public class Game {
             original = original.substring(sub.length());
         }
         return original;
+    }
+
+    public static int finalJeopardy(int balance) throws IOException {
+        int wager = wager(balance);
+        System.out.println("For $" + wager + ":");
+
+        ArrayList<Clue> finalClue = new ArrayList<>();
+        boolean done = false;
+        while(!done) {
+            ArrayList<Clue> pool = Clue.getRandom(100);
+            for (Clue clue : pool) {
+                if (clue.getValue() == 0) {
+                    if(!clue.getQuestion().trim().equals("")) {
+                        if(!clue.getAnswer().trim().equals("")) {
+                            finalClue.add(clue);
+                            done = true;
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+
+        GridTable g = GridTable.of(1, 1); // Displays the category in a simple box
+        g.put(0, 0, Collections.singleton(finalClue.get(0).getCategory().getTitle().toUpperCase()));
+        g.apply(VERTICAL_CENTER).apply(HORIZONTAL_CENTER);
+        g = Border.SINGLE_LINE.apply(g);
+        Util.print(g);
+
+        GridTable h = GridTable.of(1, 1); // Displays the question in a simple box
+        h.put(0, 0, Collections.singleton(finalClue.get(0).getQuestion()));
+        h.apply(VERTICAL_CENTER).apply(HORIZONTAL_CENTER);
+        h = Border.SINGLE_LINE.apply(h);
+        Util.print(h);
+
+        int balanceBefore = balance;
+        while (true) {
+            balance = processGuess(finalClue.get(0), wager, balance);
+            if(balance != -balanceBefore) {
+                break;
+            }
+        }
+        System.out.print("[Enter] ");
+        scanner.nextLine();
+        return balance;
+    }
+
+    public static int triviaMode() throws IOException {
+        int balance = 0;
+        while(true) {
+            ArrayList<Clue> finalClue = new ArrayList<>();
+            boolean done = false;
+            while (!done) {
+                ArrayList<Clue> pool = Clue.getRandom(100);
+                for (Clue clue : pool) {
+                    if (clue.getValue() != 0) {
+                        if (!clue.getQuestion().trim().equals("")) {
+                            if (!clue.getAnswer().trim().equals("")) {
+                                finalClue.add(clue);
+                                done = true;
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+            Clue clue = finalClue.get(0);
+            if (clue.getValue() == 100 || clue.getValue() == 300 || clue.getValue() == 500) {
+                clue.setValue(clue.getValue() * 2);
+            }
+
+            System.out.println("\nFor $" + clue.getValue() + ":");
+
+            GridTable g = GridTable.of(1, 1); // Displays the category in a simple box
+            g.put(0, 0, Collections.singleton(clue.getCategory().getTitle().toUpperCase()));
+            g.apply(VERTICAL_CENTER).apply(HORIZONTAL_CENTER);
+            g = Border.SINGLE_LINE.apply(g);
+            Util.print(g);
+
+            GridTable h = GridTable.of(1, 1); // Displays the question in a simple box
+            h.put(0, 0, Collections.singleton(clue.getQuestion()));
+            h.apply(VERTICAL_CENTER).apply(HORIZONTAL_CENTER);
+            h = Border.SINGLE_LINE.apply(h);
+            Util.print(h);
+
+            balance = Game.processGuess(finalClue.get(0), clue.getValue(), balance);
+            System.out.println("\nBalance: $" + balance + "\n");
+            System.out.print("[Enter/q] ");
+            String exit = scanner.nextLine();
+            if(exit.trim().equals("q")) {
+                return balance;
+            }
+        }
     }
 }
