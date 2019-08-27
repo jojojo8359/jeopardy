@@ -8,6 +8,7 @@ import java.util.Date;
 /**
  * Unused class to parse datetime in an ISO 8601 format
  * @author Joel Keaton
+ * @version 1.0.1
  */
 
 public class timeParser {

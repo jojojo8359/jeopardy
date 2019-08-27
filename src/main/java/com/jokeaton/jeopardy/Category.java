@@ -8,6 +8,7 @@ import java.util.ArrayList;
 /**
  * Provides a data structure for a Jeopardy category.
  * @author Joel Keaton
+ * @version 1.0.1
  */
 public class Category extends Space {
     private int clues_count;

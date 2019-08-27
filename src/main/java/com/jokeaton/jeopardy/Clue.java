@@ -8,6 +8,7 @@ import java.util.ArrayList;
 /**
  * Provides a data structure for a Jeopardy clue.
  * @author Joel Keaton
+ * @version 1.0.1
  */
 public class Clue extends Space {
     private String answer;
@@ -239,7 +240,7 @@ public class Clue extends Space {
      * @param category the id of the category you want to return
      * @param offset offsets the returned clues. Useful in pagination
      * @return multiple clue objects fetched from the endpoint
-     * @throws IOException
+     * @throws IOException caused by get method
      */
     public static ArrayList<Clue> getClues(int value, int category, int offset) throws IOException {
         return cluesFromArray(webService.clues(value, category, offset));
@@ -249,7 +250,7 @@ public class Clue extends Space {
      * Gets and parses data from the /api/random endpoint.
      * @param count amount of clues to return, limited to 100 at a time
      * @return multiple clue objects fetched from the endpoint
-     * @throws IOException
+     * @throws IOException caused by get method
      */
     public static ArrayList<Clue> getRandom(int count) throws IOException {
         return cluesFromArray(webService.random(count));

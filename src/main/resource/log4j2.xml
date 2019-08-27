@@ -1,4 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- This is the configuration file for Log4j2, a logger that was used for debugging during the development stage -->
+<!-- If you wish to enable logging, set the "logdir" property to a convenient filepath, then uncomment all lines in the "Appenders" and "Loggers" sections. -->
+<!-- If you wish to disable logging, uncomment the "logdir" property, the RollingFile Appender, and all Loggers except Root. (Only comment out "level='error'" in root Logger) -->
 <Configuration status="info">
     <Properties>
         <Property name="logdir"/><!--home/joel/Desktop/logs-->

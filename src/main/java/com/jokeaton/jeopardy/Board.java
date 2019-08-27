@@ -10,7 +10,6 @@ import org.apache.logging.log4j.Logger;
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Random;
 
 import static com.inamik.text.tables.Cell.Functions.HORIZONTAL_CENTER;
@@ -19,6 +18,7 @@ import static com.inamik.text.tables.Cell.Functions.VERTICAL_CENTER;
 /**
  * Class for the game's board
  * @author Joel Keaton
+ * @version 1.0.1
  */
 public class Board {
     private static Logger logger = LogManager.getLogger(Board.class);
@@ -148,7 +148,15 @@ public class Board {
         this.getClue(col, row).setDailyDouble(state);
     }
 
-    public void genRandColValues(int col, int start, int end, int increment) throws IOException { // Generates random clues based on a random category in order to fill in a certain column
+    /**
+     * Generates random clues based on a random category in order to fill in a certain column
+     * @param col the column to randomly generate
+     * @param start the starting value to search from
+     * @param end the value to end the search at
+     * @param increment the increment to search by (100 would be 100, 200, 300, etc.)
+     * @throws IOException caused by get method
+     */
+    public void genRandColValues(int col, int start, int end, int increment) throws IOException {
         logger.debug("Start gen col " + col);
         ArrayList<Clue> pool = new ArrayList<Clue>(); // Master clue pool, will add and print these clues to the board
         Category finalcat = new Category(0, 0, ""); // Final category, will be added and printed to the board
@@ -193,9 +201,14 @@ public class Board {
         logger.debug("! clues:" + ids);
     }
 
+    /**
+     * Generates a full board given a mode
+     * @param mode the board's creation mode, 0 is for single jeopardy, 1 is for double jeopardy
+     * @throws IOException caused by get method
+     */
     public void genRandomBoard(int mode) throws IOException {
         if(mode == 0) {
-            this.mode = "normal"; // This means that the board will generate values from 100-500
+            this.mode = "single"; // This means that the board will generate values from 100-500
         }
         else if(mode == 1) {
             this.mode = "double";
@@ -227,6 +240,9 @@ public class Board {
         this.genDailyDouble(); // Makes a random clue on the board a Daily Double
     }
 
+    /**
+     * Generates a random spot on the board to place a daily double space.
+     */
     public void genDailyDouble() {
         int chance = getRandomNumberInRange(1, 10000); // Generates number from 1-10000 (represents 0.00%-100.00%) http://digg.com/2018/joepardy-daily-double-probability-mapped
         int col = 0;
@@ -265,6 +281,12 @@ public class Board {
         this.setDailyDouble(col, row, true); // Sets location as Daily Double spot
     }
 
+    /**
+     * Returns a random number between the minimum and maximum values given
+     * @param min the minimum value
+     * @param max the maximum value
+     * @return a random number between the min and max
+     */
     public static int getRandomNumberInRange(int min, int max) { // https://www.mkyong.com/java/java-generate-random-integers-in-a-range/
         if (min >= max) {
             throw new IllegalArgumentException("max must be greater than min");
@@ -273,11 +295,22 @@ public class Board {
         return r.nextInt((max - min) + 1) + min;
     }
 
+    /**
+     * Helper method to tell if a given is greater than a number and less than or equal to another one
+     * @param x the given number
+     * @param lower the lower bound
+     * @param upper the upper bound
+     * @return true if x is between lower and upper, false if not
+     */
     public static boolean isBetween(int x, int lower, int upper) {
         return lower < x && x <= upper;
     } // Used in genDailyDouble()
 
-    public String toString() { // Prints the board table to the screen
+    /**
+     * Prints the board table to the screen
+     * @return the board as a String
+     */
+    public String toString() {
         GridTable g = GridTable.of(6, 6); // Initializes table with 6 rows and 6 columns
         int catheight = 3;
         int dollarheight = 1;
@@ -320,6 +353,11 @@ public class Board {
         return ""; // Since this is the built in toString() method, this will always print an extra newline at the end :/
     }
 
+    /**
+     * Print and update a progress bar to display the creation progress of the board
+     * @param remain part
+     * @param total whole
+     */
     public static void progressPercentage(int remain, int total) { // https://stackoverflow.com/a/43381186
         if (remain > total) {
             throw new IllegalArgumentException();
@@ -334,7 +372,7 @@ public class Board {
         for (int i = 0; i < remainPercent; i++) {
             bareDone.append(icon);
         }
-        String bareRemain = bare.substring(remainPercent, bare.length());
+        String bareRemain = bare.substring(remainPercent);
         System.out.print("\r" + bareDone + bareRemain + " " + remainPercent * 5 + "%"); // Number is 10 for 10 unit, 5 for 20 unit, etc.
         if (remain == total) {
             System.out.print(" Done! ");

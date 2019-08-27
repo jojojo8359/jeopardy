@@ -13,6 +13,7 @@ import org.json.*;
  * Provides an API wrapper for the JService.io API. (http://jservice.io/)
  * Every endpoint of the API has its respective method with the proper parameters for each call.
  * @author Joel Keaton
+ * @version 1.0.1
  */
 public class webService {
     public webService() {}
