@@ -208,7 +208,7 @@ public class Board {
      */
     public void genRandomBoard(int mode) throws IOException {
         if(mode == 0) {
-            this.mode = "single"; // This means that the board will generate values from 100-500
+            this.mode = "normal"; // This means that the board will generate values from 100-500
         }
         else if(mode == 1) {
             this.mode = "double";
