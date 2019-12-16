@@ -1,4 +1,4 @@
-package main.java.com.jokeaton.jeopardy;
+package main.java.com.jokeaton.jeopardy_console;
 
 import org.json.*;
 

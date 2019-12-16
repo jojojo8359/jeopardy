@@ -1,10 +1,10 @@
-package main.java.com.jokeaton.jeopardy;
+package main.java.com.jokeaton.jeopardy_graphics;
 
-import com.inamik.text.tables.GridTable;
-import com.inamik.text.tables.grid.Border;
-import com.inamik.text.tables.grid.Util;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+//import com.inamik.text.tables.GridTable;
+//import com.inamik.text.tables.grid.Border;
+//import com.inamik.text.tables.grid.Util;
+//import org.apache.logging.log4j.LogManager;
+//import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
 import java.text.Normalizer;
@@ -14,8 +14,8 @@ import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static com.inamik.text.tables.Cell.Functions.HORIZONTAL_CENTER;
-import static com.inamik.text.tables.Cell.Functions.VERTICAL_CENTER;
+//import static com.inamik.text.tables.Cell.Functions.HORIZONTAL_CENTER;
+//import static com.inamik.text.tables.Cell.Functions.VERTICAL_CENTER;
 
 /**
  * Game logic classes for different modes
@@ -23,7 +23,7 @@ import static com.inamik.text.tables.Cell.Functions.VERTICAL_CENTER;
  * @version 1.0.1
  */
 public class Game {
-    private static Logger logger = LogManager.getLogger(Game.class);
+//    private static Logger logger = LogManager.getLogger(Game.class);
     private static Scanner scanner = new Scanner(System.in);
 
     public Game() {}
@@ -33,12 +33,12 @@ public class Game {
      * @throws IOException caused by get method
      */
     public static int singlePlayer(int mode, int balance) throws IOException {
-        logger.info("===========================");
-        logger.info("Create new board");
+//        logger.info("===========================");
+//        logger.info("Create new board");
         Board board = new Board(); // Creates new board instance
-        logger.info("Generate random board");
+//        logger.info("Generate random board");
         board.genRandomBoard(mode); // Generates random categories and clues for the board
-        logger.info("Starting game");
+//        logger.info("Starting game");
         while(!board.boardAnswered()) { // While the board still has clues on it
             printNormalBoard(board, balance);
             while(true) { // Main guess loop
@@ -71,7 +71,7 @@ public class Game {
                     break;
                 } else {
                     System.out.println("This clue has already been guessed! Please try again!");
-                    logger.info("Invalid spot");
+//                    logger.info("Invalid spot");
                 }
             }
         }
@@ -88,10 +88,10 @@ public class Game {
     public static int processGuess(Clue clue, int value, int balance) {
         System.out.print("What/who is "); // Prompt for the user to answer the question
         String answer = scanner.nextLine();
-        logger.info("Guessed " + answer + ", answer " + clue.getAnswer());
+//        logger.info("Guessed " + answer + ", answer " + clue.getAnswer());
         if(answer.equals("!r") || clue.getAnswer().equals("")) { // Triggers report case if the user types "!r" or the question is somehow empty
             System.out.println("Only use the report link if something is wrong with the clue text. This clue's ID is " + clue.getId());
-            logger.warn("Reported Clue #" + clue.getId());
+//            logger.warn("Reported Clue #" + clue.getId());
             balance = -balance; // Sends user to the beginning of the guess loop
             return balance;
         }
@@ -132,11 +132,11 @@ public class Game {
     public static void printClue(Clue clue, int value) {
         System.out.println();
         System.out.println("For $" + value + ":");
-        GridTable g = GridTable.of(1, 1); // Displays the question in a simple box
-        g.put(0, 0, Collections.singleton(clue.getQuestion()));
-        g.apply(VERTICAL_CENTER).apply(HORIZONTAL_CENTER);
-        g = Border.SINGLE_LINE.apply(g);
-        Util.print(g);
+//        GridTable g = GridTable.of(1, 1); // Displays the question in a simple box
+//        g.put(0, 0, Collections.singleton(clue.getQuestion()));
+//        g.apply(VERTICAL_CENTER).apply(HORIZONTAL_CENTER);
+//        g = Border.SINGLE_LINE.apply(g);
+//        Util.print(g);
     }
 
     /**
@@ -180,7 +180,7 @@ public class Game {
                 int code = column.charAt(0);
                 if(code >= 97 && code <= 102) { // From a-f (decimal 97-102)
                     col = code - 97; // Converts to base 0 (a = 0, b = 1, c = 2, etc.)
-                    logger.info("Chose column " + col);
+//                    logger.info("Chose column " + col);
                     break;
                 }
                 else {
@@ -209,7 +209,7 @@ public class Game {
             String value = scanner.nextLine();
             if(value.equals("!r")) { // If the user types "!r", show the category's id for reporting purposes.
                 System.out.println("Only use the report link if something is wrong with the category text. This category's ID is " + board.getCategory(col).getId());
-                logger.warn("Reported Category #" + board.getCategory(col).getId());
+//                logger.warn("Reported Category #" + board.getCategory(col).getId());
                 return -1; // Allows the user to rechoose a clue after getting the report id
             }
 
@@ -230,7 +230,7 @@ public class Game {
                 System.out.println("I couldn't recognize that! Please try again!"); // Make user try again if it isn't a number it recognizes
             }
         }
-        logger.info("Chose row " + row);
+//        logger.info("Chose row " + row);
         return row;
     }
 
@@ -409,17 +409,17 @@ public class Game {
             }
         }
 
-        GridTable g = GridTable.of(1, 1); // Displays the category in a simple box
-        g.put(0, 0, Collections.singleton(finalClue.get(0).getCategory().getTitle().toUpperCase()));
-        g.apply(VERTICAL_CENTER).apply(HORIZONTAL_CENTER);
-        g = Border.SINGLE_LINE.apply(g);
-        Util.print(g);
-
-        GridTable h = GridTable.of(1, 1); // Displays the question in a simple box
-        h.put(0, 0, Collections.singleton(finalClue.get(0).getQuestion()));
-        h.apply(VERTICAL_CENTER).apply(HORIZONTAL_CENTER);
-        h = Border.SINGLE_LINE.apply(h);
-        Util.print(h);
+//        GridTable g = GridTable.of(1, 1); // Displays the category in a simple box
+//        g.put(0, 0, Collections.singleton(finalClue.get(0).getCategory().getTitle().toUpperCase()));
+//        g.apply(VERTICAL_CENTER).apply(HORIZONTAL_CENTER);
+//        g = Border.SINGLE_LINE.apply(g);
+//        Util.print(g);
+//
+//        GridTable h = GridTable.of(1, 1); // Displays the question in a simple box
+//        h.put(0, 0, Collections.singleton(finalClue.get(0).getQuestion()));
+//        h.apply(VERTICAL_CENTER).apply(HORIZONTAL_CENTER);
+//        h = Border.SINGLE_LINE.apply(h);
+//        Util.print(h);
 
         int balanceBefore = balance;
         while (true) {
@@ -464,17 +464,17 @@ public class Game {
 
             System.out.println("\nFor $" + clue.getValue() + ":");
 
-            GridTable g = GridTable.of(1, 1); // Displays the category in a simple box
-            g.put(0, 0, Collections.singleton(clue.getCategory().getTitle().toUpperCase()));
-            g.apply(VERTICAL_CENTER).apply(HORIZONTAL_CENTER);
-            g = Border.SINGLE_LINE.apply(g);
-            Util.print(g);
-
-            GridTable h = GridTable.of(1, 1); // Displays the question in a simple box
-            h.put(0, 0, Collections.singleton(clue.getQuestion()));
-            h.apply(VERTICAL_CENTER).apply(HORIZONTAL_CENTER);
-            h = Border.SINGLE_LINE.apply(h);
-            Util.print(h);
+//            GridTable g = GridTable.of(1, 1); // Displays the category in a simple box
+//            g.put(0, 0, Collections.singleton(clue.getCategory().getTitle().toUpperCase()));
+//            g.apply(VERTICAL_CENTER).apply(HORIZONTAL_CENTER);
+//            g = Border.SINGLE_LINE.apply(g);
+//            Util.print(g);
+//
+//            GridTable h = GridTable.of(1, 1); // Displays the question in a simple box
+//            h.put(0, 0, Collections.singleton(clue.getQuestion()));
+//            h.apply(VERTICAL_CENTER).apply(HORIZONTAL_CENTER);
+//            h = Border.SINGLE_LINE.apply(h);
+//            Util.print(h);
 
             balance = Game.processGuess(finalClue.get(0), clue.getValue(), balance);
             System.out.println("\nBalance: $" + balance + "\n");

@@ -1,10 +1,10 @@
-package main.java.com.jokeaton.jeopardy;
+package main.java.com.jokeaton.jeopardy_graphics;
+
+//import org.apache.logging.log4j.LogManager;
+//import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
 import java.util.Scanner;
-
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.LogManager;
 
 /**
  * Main game class for mode selection through a menu
@@ -14,7 +14,7 @@ import org.apache.logging.log4j.LogManager;
 
 public class Main {
     private static Scanner scanner = new Scanner(System.in);
-    private static final Logger logger = LogManager.getLogger(Main.class);
+//    private static final Logger logger = LogManager.getLogger(Main.class);
 
     /**
      * Main game loop

@@ -24,19 +24,19 @@
     </Appenders>
 
     <Loggers>
-<!--        <Logger name="main.java.com.jokeaton.jeopardy.Main" level="info" additivity="false">-->
+<!--        <Logger name="main.java.com.jokeaton.jeopardy_console.Main" level="info" additivity="false">-->
 <!--            <AppenderRef ref="RollingFile"/>-->
 <!--        </Logger>-->
 
-<!--        <Logger name="main.java.com.jokeaton.jeopardy.Game" level="debug" additivity="false">-->
+<!--        <Logger name="main.java.com.jokeaton.jeopardy_console.Game" level="debug" additivity="false">-->
 <!--            <AppenderRef ref="RollingFile"/>-->
 <!--        </Logger>-->
 
-<!--        <Logger name="main.java.com.jokeaton.jeopardy.Board" level="debug" additivity="false">-->
+<!--        <Logger name="main.java.com.jokeaton.jeopardy_console.Board" level="debug" additivity="false">-->
 <!--            <AppenderRef ref="RollingFile"/>-->
 <!--        </Logger>-->
 
-<!--        <Logger name="main.java.com.jokeaton.jeopardy.webService" level="debug" additivity="false">-->
+<!--        <Logger name="main.java.com.jokeaton.jeopardy_console.webService" level="debug" additivity="false">-->
 <!--            <AppenderRef ref="RollingFile"/>-->
 <!--        </Logger>-->
 

@@ -1,4 +1,4 @@
-package main.java.com.jokeaton.jeopardy;
+package main.java.com.jokeaton.jeopardy_console;
 
 import com.inamik.text.tables.Cell;
 import com.inamik.text.tables.GridTable;

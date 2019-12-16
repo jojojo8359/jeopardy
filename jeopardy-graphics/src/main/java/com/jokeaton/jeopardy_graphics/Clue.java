@@ -1,6 +1,8 @@
-package main.java.com.jokeaton.jeopardy;
+package main.java.com.jokeaton.jeopardy_graphics;
 
-import org.json.*;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -172,7 +174,7 @@ public class Clue extends Space {
         int invalid_count;
         try {
             invalid_count = clue.getInt("invalid_count");
-        } catch (org.json.JSONException e) {
+        } catch (JSONException e) {
             invalid_count = 0;
         }
         int id = clue.getInt("id");
@@ -199,7 +201,7 @@ public class Clue extends Space {
         int invalid_count;
         try {
             invalid_count = clue.getInt("invalid_count");
-        } catch (org.json.JSONException e) {
+        } catch (JSONException e) {
             invalid_count = 0;
         }
         int id = clue.getInt("id");

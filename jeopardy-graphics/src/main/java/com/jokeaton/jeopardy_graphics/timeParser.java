@@ -1,4 +1,4 @@
-package main.java.com.jokeaton.jeopardy;
+package main.java.com.jokeaton.jeopardy_graphics;
 
 import java.text.DateFormat;
 import java.text.ParseException;
