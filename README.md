@@ -1,4 +1,4 @@
-# jeopardy
+# [jeopardy](https://github.com/jojojo8359/jeopardy)
 A Jeopardy! game made with Java that uses [jservice.io](http://jservice.io)
 
 # How to Play
