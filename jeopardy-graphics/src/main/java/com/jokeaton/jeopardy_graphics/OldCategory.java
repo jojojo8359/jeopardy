@@ -6,7 +6,12 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.util.ArrayList;
 
-public class Category extends Space {
+/**
+ * Provides a data structure for a Jeopardy category.
+ * @author Joel Keaton
+ * @version 1.0.1
+ */
+public class OldCategory extends Space {
     private int clues_count;
     private int id;
     private String title;
@@ -14,12 +19,11 @@ public class Category extends Space {
 
     /**
      * Constructor for a category.
-     *
      * @param clues_count how many clues are in the category
-     * @param id          jservice's category id
-     * @param title       title of the category
+     * @param id jservice's category id
+     * @param title title of the category
      */
-    public Category(int clues_count, int id, String title) {
+    public OldCategory(int clues_count, int id, String title) {
         this.clues_count = clues_count;
         this.id = id;
         this.title = title;
@@ -28,13 +32,12 @@ public class Category extends Space {
     /**
      * Constructor for a category, given a clue list for the category. (Meant to be used with the /api/category
      * endpoint)
-     *
      * @param clues_count how many clues are in the category
-     * @param id          jservice's category id
-     * @param title       title of the category
-     * @param clues       clues in the category
+     * @param id jservice's category id
+     * @param title title of the category
+     * @param clues clues in the category
      */
-    public Category(int clues_count, int id, String title, ArrayList<OldClue> clues) {
+    public OldCategory(int clues_count, int id, String title, ArrayList<OldClue> clues) {
         this.clues_count = clues_count;
         this.id = id;
         this.title = title;
@@ -43,7 +46,6 @@ public class Category extends Space {
 
     /**
      * Getter method for the number of clues in the category
-     *
      * @return how many clues are in the category
      */
     public int getCluesCount() {
@@ -52,7 +54,6 @@ public class Category extends Space {
 
     /**
      * Getter method for the category's id
-     *
      * @return jservice's category id
      */
     public int getId() {
@@ -61,7 +62,6 @@ public class Category extends Space {
 
     /**
      * Getter method for the category's title
-     *
      * @return title of the category
      */
     public String getTitle() {
@@ -70,7 +70,6 @@ public class Category extends Space {
 
     /**
      * Getter method for the clues in the category
-     *
      * @return clues in the category
      */
     public ArrayList<OldClue> getClues() {
@@ -82,11 +81,11 @@ public class Category extends Space {
      * @param category the JSONObject containing the category data
      * @return category object
      */
-    public static Category categoryFromObject(JSONObject category) {
+    public static OldCategory categoryFromObject(JSONObject category) {
         int clues_count = category.getInt("clues_count");
         int id = category.getInt("id");
         String title = category.getString("title");
-        return new Category(clues_count, id, title);
+        return new OldCategory(clues_count, id, title);
     }
 
     /**
@@ -95,12 +94,12 @@ public class Category extends Space {
      * @param category the JSONObject containing the category data, including clues
      * @return category object
      */
-    public static Category categoryFromObjectClues(JSONObject category) {
+    public static OldCategory categoryFromObjectClues(JSONObject category) {
         int clues_count = category.getInt("clues_count");
         int id = category.getInt("id");
         String title = category.getString("title");
         ArrayList<OldClue> clues = OldClue.cluesFromArrayNoCat(category.getJSONArray("clues"));
-        return new Category(clues_count, id, title, clues);
+        return new OldCategory(clues_count, id, title, clues);
     }
 
     /**
@@ -108,8 +107,8 @@ public class Category extends Space {
      * @param categories the JSONArray containing multiple JSONObjects with category data
      * @return multiple category objects
      */
-    public static ArrayList<Category> categoriesFromArray(JSONArray categories) {
-        ArrayList<Category> categoriesList = new ArrayList<>();
+    public static ArrayList<OldCategory> categoriesFromArray(JSONArray categories) {
+        ArrayList<OldCategory> categoriesList = new ArrayList<>();
         for(int i = 0; i < categories.length(); i++) {
             categoriesList.add(categoryFromObject(categories.getJSONObject(i)));
         }
@@ -123,7 +122,7 @@ public class Category extends Space {
      * @return multiple category objects fetched from the endpoint
      * @throws IOException caused by get method
      */
-    public static ArrayList<Category> getCategories(int count, int offset) throws IOException {
+    public static ArrayList<OldCategory> getCategories(int count, int offset) throws IOException {
         return categoriesFromArray(webService.categories(count, offset));
     }
 
@@ -133,7 +132,7 @@ public class Category extends Space {
      * @return multiple category objects fetched from the endpoint
      * @throws IOException caused by get method
      */
-    public static Category getCategory(int id) throws IOException {
+    public static OldCategory getCategory(int id) throws IOException {
         return categoryFromObjectClues(webService.category(id));
     }
 }

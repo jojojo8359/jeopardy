@@ -72,8 +72,8 @@ public class Board {
      * @param col the column to get the Category object at
      * @return the Category object
      */
-    public Category getCategory(int col) {
-        return (Category) this.board.get(col).get(0);
+    public OldCategory getCategory(int col) {
+        return (OldCategory) this.board.get(col).get(0);
     }
 
     /**
@@ -82,8 +82,8 @@ public class Board {
      * @param row the row to get the Clue object at
      * @return the Clue object
      */
-    public Clue getClue(int col, int row) {
-        return (Clue) this.board.get(col).get(row);
+    public OldClue getClue(int col, int row) {
+        return (OldClue) this.board.get(col).get(row);
     }
 
     /**
@@ -158,16 +158,16 @@ public class Board {
      */
     public void genRandColValues(int col, int start, int end, int increment) throws IOException {
 //        logger.debug("Start gen col " + col);
-        ArrayList<Clue> pool = new ArrayList<Clue>(); // Master clue pool, will add and print these clues to the board
-        Category finalcat = new Category(0, 0, ""); // Final category, will be added and printed to the board
+        ArrayList<OldClue> pool = new ArrayList<OldClue>(); // Master clue pool, will add and print these clues to the board
+        OldCategory finalcat = new OldCategory(0, 0, ""); // Final category, will be added and printed to the board
 //        logger.debug("  start cat search");
         while (pool.size() != 5) { // Looking for five clues in a category, main clue loop per column
-            Category category = Category.getCategories(1, this.random.nextInt(18320)).get(0); // Gets a random category to try
+            OldCategory category = OldCategory.getCategories(1, this.random.nextInt(18320)).get(0); // Gets a random category to try
             this.requests++;
 //            logger.debug("   got cat#" + category.getId());
             finalcat = category;
             for (int i = start; i >= end; i -= increment) { // Searches for clues of values 100-500
-                ArrayList<Clue> valuePool = Clue.getClues(i, category.getId(), 0); // Has to make a pool to choose from multiple clues of same value (i.e. 2 $200 clues)
+                ArrayList<OldClue> valuePool = OldClue.getClues(i, category.getId(), 0); // Has to make a pool to choose from multiple clues of same value (i.e. 2 $200 clues)
 //                this.requests++;
                 if (valuePool.size() == 0) { // If the search comes up empty (no clue with value in category), then throw the category out and try again
 //                    logger.debug("*  cat#" + category.getId() + " no clue pool $" + i + ", retrying");
@@ -191,7 +191,7 @@ public class Board {
 //        logger.debug("! finished cat search col " + col + " #" + finalcat.getId());
         this.addSpace(col, finalcat); // Adds the category name to the board for display purposes
         StringBuilder ids = new StringBuilder();
-        for (Clue clue : pool) {
+        for (OldClue clue : pool) {
             clue.setValue(clue.getValue() * 2);
         }
         for(int i = pool.size() - 1; i >= 0; i--) {
@@ -317,7 +317,7 @@ public class Board {
         int globalWidth = 14;
         for(int i = 0; i < 6; i++) { // column
             for(int j = 0; j < 6; j++) { // row
-                if(this.getSpace(i, j).getClass() == Category.class) { // If the chosen cell is a category space, print its title
+                if(this.getSpace(i, j).getClass() == OldCategory.class) { // If the chosen cell is a category space, print its title
                     String title = this.getCategory(i).getTitle().toUpperCase();
                     if(title.length() > globalWidth && title.contains(" ")) { // Wraps category text if necessary
                         String[] sep = new String[2];

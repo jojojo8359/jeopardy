@@ -9,7 +9,6 @@ package main.java.com.jokeaton.jeopardy_graphics;
 import java.io.IOException;
 import java.text.Normalizer;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -85,7 +84,7 @@ public class Game {
      * @param balance the user's balance
      * @return the new balance after the user guesses
      */
-    public static int processGuess(Clue clue, int value, int balance) {
+    public static int processGuess(OldClue clue, int value, int balance) {
         System.out.print("What/who is "); // Prompt for the user to answer the question
         String answer = scanner.nextLine();
 //        logger.info("Guessed " + answer + ", answer " + clue.getAnswer());
@@ -129,7 +128,7 @@ public class Game {
      * @param clue the clue the user is guessing
      * @param value the value of the clue
      */
-    public static void printClue(Clue clue, int value) {
+    public static void printClue(OldClue clue, int value) {
         System.out.println();
         System.out.println("For $" + value + ":");
 //        GridTable g = GridTable.of(1, 1); // Displays the question in a simple box
@@ -392,11 +391,11 @@ public class Game {
         int wager = wager(balance);
         System.out.println("For $" + wager + ":");
 
-        ArrayList<Clue> finalClue = new ArrayList<>();
+        ArrayList<OldClue> finalClue = new ArrayList<>();
         boolean done = false;
         while(!done) {
-            ArrayList<Clue> pool = Clue.getRandom(100);
-            for (Clue clue : pool) {
+            ArrayList<OldClue> pool = OldClue.getRandom(100);
+            for (OldClue clue : pool) {
                 if (clue.getValue() == 0) {
                     if(!clue.getQuestion().trim().equals("")) {
                         if(!clue.getAnswer().trim().equals("")) {
@@ -441,11 +440,11 @@ public class Game {
     public static int triviaMode() throws IOException {
         int balance = 0;
         while(true) {
-            ArrayList<Clue> finalClue = new ArrayList<>();
+            ArrayList<OldClue> finalClue = new ArrayList<>();
             boolean done = false;
             while (!done) {
-                ArrayList<Clue> pool = Clue.getRandom(100);
-                for (Clue clue : pool) {
+                ArrayList<OldClue> pool = OldClue.getRandom(100);
+                for (OldClue clue : pool) {
                     if (clue.getValue() != 0) {
                         if (!clue.getQuestion().trim().equals("")) {
                             if (!clue.getAnswer().trim().equals("")) {
@@ -457,7 +456,7 @@ public class Game {
                     }
                 }
             }
-            Clue clue = finalClue.get(0);
+            OldClue clue = finalClue.get(0);
             if (clue.getValue() == 100 || clue.getValue() == 300 || clue.getValue() == 500) {
                 clue.setValue(clue.getValue() * 2);
             }

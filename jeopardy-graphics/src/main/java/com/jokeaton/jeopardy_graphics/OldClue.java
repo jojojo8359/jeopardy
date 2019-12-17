@@ -7,7 +7,12 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.util.ArrayList;
 
-public class Clue extends Space {
+/**
+ * Provides a data structure for a Jeopardy clue.
+ * @author Joel Keaton
+ * @version 1.0.1
+ */
+public class OldClue extends Space {
     private String answer;
     private String question;
     private String airdate;
@@ -18,7 +23,17 @@ public class Clue extends Space {
     private boolean answered;
     private boolean dailyDouble;
 
-    public Clue(String answer, String question, String airdate, int invalid_count, int id, OldCategory category, int value) {
+    /**
+     * Constructor for a clue, given a valid category structure the clue belongs to.
+     * @param answer answer to the clue's question
+     * @param question clue's question
+     * @param airdate the airdate of the clue, in format YYYY-MM-DDTHH:MMZ (according to ISO 8601)
+     * @param invalid_count how many times the clue has been marked as invalid (missing data)
+     * @param id jservice's clue id
+     * @param category category structure provided
+     * @param value dollar value of the clue
+     */
+    public OldClue(String answer, String question, String airdate, int invalid_count, int id, OldCategory category, int value) {
         this.answer = answer;
         this.question = question;
         this.airdate = airdate;
@@ -30,7 +45,17 @@ public class Clue extends Space {
         this.dailyDouble = false;
     }
 
-    public Clue(String answer, String question, String airdate, int invalid_count, int id, int value) {
+    /**
+     * Constructor for a clue, NOT given a valid category structure (mainly for when using the /api/category endpoint,
+     * since this endpoint gives the category data separate from the clues).
+     * @param answer answer to the clue's question
+     * @param question clue's question
+     * @param airdate the airdate of the clue, in format YYYY-MM-DDTHH:MMZ (according to ISO 8601)
+     * @param invalid_count how many times the clue has been marked as invalid (missing data)
+     * @param id jservice's clue id
+     * @param value dollar value of the clue
+     */
+    public OldClue(String answer, String question, String airdate, int invalid_count, int id, int value) {
         this.answer = answer;
         this.question = question;
         this.airdate = airdate;
@@ -142,7 +167,7 @@ public class Clue extends Space {
      * @param clue the JSONObject containing the clue data
      * @return clue object
      */
-    public static Clue clueFromObject(JSONObject clue) {
+    public static OldClue clueFromObject(JSONObject clue) {
         String answer = clue.getString("answer");
         String question = clue.getString("question");
         String airdate = clue.getString("airdate");
@@ -160,7 +185,7 @@ public class Clue extends Space {
         } catch (JSONException e) {
             value = 0;
         }
-        return new Clue(answer, question, airdate, invalid_count, id, category, value);
+        return new OldClue(answer, question, airdate, invalid_count, id, category, value);
     }
 
     /**
@@ -169,7 +194,7 @@ public class Clue extends Space {
      * @param clue the JSONObject containing the clue data (with no category data)
      * @return clue object
      */
-    public static Clue clueFromCategoryObject(JSONObject clue) {
+    public static OldClue clueFromCategoryObject(JSONObject clue) {
         String answer = clue.getString("answer");
         String question = clue.getString("question");
         String airdate = clue.getString("airdate");
@@ -181,7 +206,7 @@ public class Clue extends Space {
         }
         int id = clue.getInt("id");
         int value = clue.getInt("value");
-        return new Clue(answer, question, airdate, invalid_count, id, value);
+        return new OldClue(answer, question, airdate, invalid_count, id, value);
     }
 
     /**
@@ -189,8 +214,8 @@ public class Clue extends Space {
      * @param clues the JSONArray containing multiple JSONObjects with clue data
      * @return multiple clue objects
      */
-    public static ArrayList<Clue> cluesFromArray(JSONArray clues) {
-        ArrayList<Clue> cluesList = new ArrayList<>();
+    public static ArrayList<OldClue> cluesFromArray(JSONArray clues) {
+        ArrayList<OldClue> cluesList = new ArrayList<>();
         for(int i = 0; i < clues.length(); i++) {
             cluesList.add(clueFromObject(clues.getJSONObject(i)));
         }
@@ -203,8 +228,8 @@ public class Clue extends Space {
      * @param clues the JSONArray containing multiple JSONObjects with clue data and no category data
      * @return multiple clue objects
      */
-    public static ArrayList<Clue> cluesFromArrayNoCat(JSONArray clues) {
-        ArrayList<Clue> cluesList = new ArrayList<>();
+    public static ArrayList<OldClue> cluesFromArrayNoCat(JSONArray clues) {
+        ArrayList<OldClue> cluesList = new ArrayList<>();
         for(int i = 0; i < clues.length(); i++) {
             cluesList.add(clueFromCategoryObject(clues.getJSONObject(i)));
         }
@@ -219,7 +244,7 @@ public class Clue extends Space {
      * @return multiple clue objects fetched from the endpoint
      * @throws IOException caused by get method
      */
-    public static ArrayList<Clue> getClues(int value, int category, int offset) throws IOException {
+    public static ArrayList<OldClue> getClues(int value, int category, int offset) throws IOException {
         return cluesFromArray(webService.clues(value, category, offset));
     }
 
@@ -229,11 +254,7 @@ public class Clue extends Space {
      * @return multiple clue objects fetched from the endpoint
      * @throws IOException caused by get method
      */
-    public static ArrayList<Clue> getRandom(int count) throws IOException {
+    public static ArrayList<OldClue> getRandom(int count) throws IOException {
         return cluesFromArray(webService.random(count));
-    }
-
-    public String toString() {
-        return Integer.toString(this.value);
     }
 }
