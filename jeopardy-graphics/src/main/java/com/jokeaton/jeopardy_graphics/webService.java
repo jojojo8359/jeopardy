@@ -3,12 +3,14 @@ package main.java.com.jokeaton.jeopardy_graphics;
 //import org.apache.logging.log4j.LogManager;
 //import org.apache.logging.log4j.Logger;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.net.UnknownHostException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -77,7 +79,12 @@ public class webService {
         if(offset > 0) {
             parameters.put("offset", Integer.toString(offset));
         }
-        return new JSONArray(get("http://jservice.io/api/categories", getParamsString(parameters)));
+        try {
+            return new JSONArray(get("http://jservice.io/api/categories", getParamsString(parameters)));
+        }
+        catch(JSONException e) {
+            return new JSONArray();
+        }
     }
 
     /**
@@ -107,9 +114,15 @@ public class webService {
         HttpURLConnection con = (HttpURLConnection) url.openConnection();
         con.setRequestMethod("GET");
 
-        int status = con.getResponseCode();
+        int status;
+        try {
+            status = con.getResponseCode();
+        }
+        catch(UnknownHostException e) {
+            return "{}";
+        }
 //        logger.debug("   GET " + url + " " + status);
-        Reader streamReader = null;
+        Reader streamReader;
         if (status > 299) {
             streamReader = new InputStreamReader(con.getErrorStream());
         }

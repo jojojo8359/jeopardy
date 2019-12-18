@@ -1,6 +1,7 @@
 package main.java.com.jokeaton.jeopardy_graphics;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
@@ -10,7 +11,7 @@ public class Category extends Space {
     private int clues_count;
     private int id;
     private String title;
-    private ArrayList<OldClue> clues;
+    private ArrayList<Clue> clues;
 
     /**
      * Constructor for a category.
@@ -34,7 +35,7 @@ public class Category extends Space {
      * @param title       title of the category
      * @param clues       clues in the category
      */
-    public Category(int clues_count, int id, String title, ArrayList<OldClue> clues) {
+    public Category(int clues_count, int id, String title, ArrayList<Clue> clues) {
         this.clues_count = clues_count;
         this.id = id;
         this.title = title;
@@ -73,7 +74,7 @@ public class Category extends Space {
      *
      * @return clues in the category
      */
-    public ArrayList<OldClue> getClues() {
+    public ArrayList<Clue> getClues() {
         return this.clues;
     }
 
@@ -85,7 +86,15 @@ public class Category extends Space {
     public static Category categoryFromObject(JSONObject category) {
         int clues_count = category.getInt("clues_count");
         int id = category.getInt("id");
-        String title = category.getString("title");
+        String title = "";
+        try {
+            title = category.getString("title");
+        }
+        catch(JSONException e) {
+            e.printStackTrace();
+            System.out.println("Category ID: " + id + " had an invalid title. Consider reporting this category.\nExiting now...");
+            System.exit(0);
+        }
         return new Category(clues_count, id, title);
     }
 
@@ -99,7 +108,7 @@ public class Category extends Space {
         int clues_count = category.getInt("clues_count");
         int id = category.getInt("id");
         String title = category.getString("title");
-        ArrayList<OldClue> clues = OldClue.cluesFromArrayNoCat(category.getJSONArray("clues"));
+        ArrayList<Clue> clues = Clue.cluesFromArrayNoCat(category.getJSONArray("clues"));
         return new Category(clues_count, id, title, clues);
     }
 

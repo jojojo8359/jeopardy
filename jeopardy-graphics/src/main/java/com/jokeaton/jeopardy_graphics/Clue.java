@@ -13,12 +13,12 @@ public class Clue extends Space {
     private String airdate;
     private int invalid_count;
     private int id;
-    private OldCategory category;
+    private Category category;
     private int value;
     private boolean answered;
     private boolean dailyDouble;
 
-    public Clue(String answer, String question, String airdate, int invalid_count, int id, OldCategory category, int value) {
+    public Clue(String answer, String question, String airdate, int invalid_count, int id, Category category, int value) {
         this.answer = answer;
         this.question = question;
         this.airdate = airdate;
@@ -85,7 +85,7 @@ public class Clue extends Space {
      * Getter method for the clue's category info
      * @return category structure provided
      */
-    public OldCategory getCategory() {
+    public Category getCategory() {
         return this.category;
     }
 
@@ -153,7 +153,7 @@ public class Clue extends Space {
             invalid_count = 0;
         }
         int id = clue.getInt("id");
-        OldCategory category = OldCategory.categoryFromObject(clue.getJSONObject("category"));
+        Category category = Category.categoryFromObject(clue.getJSONObject("category"));
         int value;
         try {
             value = clue.getInt("value");
